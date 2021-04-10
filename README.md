@@ -4,7 +4,7 @@ A blender add-on to facilitate booleans operations
 #Tuto
 -1 : Import the add on
 
-![alt text](https://https://github.com/LightAnge/AntiMesh/images/addon_install.png?raw=true)
+![alt text](https://github.com/LightAnge/AntiMesh/blob/main/images/addon_install.PNG?raw=true)
 
 
 
