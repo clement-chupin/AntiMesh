@@ -1,5 +1,8 @@
 # AntiMesh
+
 A blender add-on to facilitate booleans operations
+
+![alt text](https://github.com/LightAnge/AntiMesh/blob/main/images/add_on_logo.PNG?raw=true)
 
 #Tuto
 -1 : Import the add on
