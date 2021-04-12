@@ -15,11 +15,8 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
-
 import bpy
-
 from bpy.app.handlers import persistent
-
 bl_info = {
     "name": "AntiMesh",
     "author": "Chupin Clément",
@@ -31,7 +28,6 @@ bl_info = {
     "doc_url": "",
     "category": "Object",
 }
-
 import bpy
 import time
 from bpy.types import WorkSpaceTool
@@ -39,9 +35,10 @@ from bpy.types import Menu
 from bpy.app.handlers import persistent
 from bpy.props import BoolProperty
 
-
 class AddOn_AntiMesh_Property(bpy.types.PropertyGroup):
-    anti_active: bpy.props.BoolProperty(name='AntiMesh')
+    anti_active: bpy.props.BoolProperty(name="AntiMesh")
+    modifier_at_first: bpy.props.BoolProperty(name="Place new modifier at first")
+    
     type_boolean = [
     ('DIFFERENCE', "Difference", "Difference between 2 objects", 'SELECT_DIFFERENCE', 0),
     ('INTERSECT', "Intersection", "Intersection between 2 objects", 'SELECT_INTERSECT', 1),
@@ -52,34 +49,37 @@ class AddOn_AntiMesh_Property(bpy.types.PropertyGroup):
 @persistent
 def toolUpdated(scene):    
     anti=bpy.context.active_object
-    if anti.type == 'MESH':
-        if anti.show_wire == False and anti.display_type == 'TEXTURED' and bpy.context.scene.custom_props.anti_active:
-            print("a")
-            if (bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_cube_add" 
-                and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_cube_add'
-                or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_cone_add" 
-                and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_cone_add'
-                or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_cylinder_add" 
-                and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_cylinder_add'
-                or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_uv_sphere_add" 
-                and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_uv_sphere_add'
-                or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_ico_sphere_add" 
-                and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_ico_sphere_add'
-                ):
-                print("b")
-                anti.scale = (1.001,1.001,1.001)
-                anti.display_type = 'WIRE'
-                for ob in bpy.data.objects:
-                    if ob.type == 'MESH' and ob.show_wire == True:
-                        is_in = False
-                        for mo in ob.modifiers:
-                            if mo.object ==anti:
-                                is_in=True
-                        if not is_in:
-                            ob.modifiers.new("Anti_boolean",'BOOLEAN')
-                            m = ob.modifiers[len(ob.modifiers)-1]
-                            m.operation = bpy.context.scene.custom_props.mode_boolean
-                            m.object = anti
+    if anti is not None:
+        if anti.type == 'MESH':
+            if anti.show_wire == False and anti.display_type == 'TEXTURED' and bpy.context.scene.custom_props.anti_active:
+                if (bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_cube_add" 
+                    and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_cube_add'
+                    or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_cone_add" 
+                    and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_cone_add'
+                    or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_cylinder_add" 
+                    and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_cylinder_add'
+                    or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_uv_sphere_add" 
+                    and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_uv_sphere_add'
+                    or bpy.context.workspace.tools.from_space_view3d_mode(bpy.context.mode).idname == "builtin.primitive_ico_sphere_add" 
+                    and bpy.context.active_operator.bl_idname == 'MESH_OT_primitive_ico_sphere_add'
+                    ):
+                    anti.scale = (1.001,1.001,1.001)
+                    anti.display_type = 'WIRE'
+                    for ob in bpy.data.objects:
+                        if ob.type == 'MESH' and ob.show_wire == True:
+                            is_in = False
+                            for mo in ob.modifiers:
+                                if mo.type == 'BOOLEAN':
+                                    if mo.object ==anti:
+                                        is_in=True       
+                            if not is_in:
+                                ob.modifiers.new("Anti_boolean",'BOOLEAN')
+                                m = ob.modifiers[len(ob.modifiers)-1]
+                                m.operation = bpy.context.scene.custom_props.mode_boolean
+                                m.object = anti
+                                if bpy.context.scene.custom_props.modifier_at_first:
+                                    bpy.context.view_layer.objects.active = ob
+                                    bpy.ops.object.modifier_move_to_index(modifier=m.name, index=0)
 
 class OBJECT_OT_bool_easy(bpy.types.Operator):
     bl_idname = "object.apply_all_bool"
@@ -170,12 +170,14 @@ class VIEW3D_MT_MainMenu(Menu):
     bl_icon = 'FUND'
     def draw(self, context):
         layout = self.layout
+        layout.prop(context.scene.custom_props,"anti_active")
         layout.operator("object.apply_all_bool",icon='MODIFIER')
-        layout.prop(context.scene.custom_props,"anti_active")#,text="")
+        layout.menu("VIEW3D_MT_mode_object_menu",text="Change object mode",icon='MOD_EXPLODE')
         layout.separator(factor=1.0)
+        layout.label(text="Advenced options",icon='PROPERTIES')
         layout.row()
         layout.prop(context.scene.custom_props,text="",property="mode_boolean")
-        layout.menu("VIEW3D_MT_mode_object_menu",text="Change object mode",icon='MOD_EXPLODE')
+        layout.prop(context.scene.custom_props,"modifier_at_first",icon='FUND')
         
 
 def VIEW3D_MT_addon_top_bar(self, context):
@@ -213,9 +215,10 @@ def unregister():
     bpy.types.VIEW3D_MT_object.remove(VIEW3D_MT_addon_top_bar)
  
     wm = bpy.context.window_manager
-    for km in addon_keymaps:
-        wm.keyconfigs.addon.keymaps.remove(km)
-    addon_keymaps.clear()
+    kc = wm.keyconfigs.addon
+    if kc is not None:
+        for km, kmi in addon_keymaps:
+            km.keymap_items.remove(kmi)
     
 if __name__ == "__main__":
     register()
