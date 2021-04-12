@@ -1,6 +1,7 @@
 # AntiMesh
 
-A blender add-on to facilitate booleans operations
+A blender add-on to facilitate booleans operations,
+Work in progress, Tuto maybe out of date and some weirds bugs
 
 ![alt text](https://github.com/LightAnge/AntiMesh/blob/main/images/add_on_logo.PNG?raw=true)
 
@@ -37,5 +38,5 @@ If you know the booleans operators, you don't need tuto for the others options
 
 
 
-# Work in progress, Tuto maybe out of dtae and some weirds bugs
+
 
