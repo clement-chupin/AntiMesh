@@ -37,5 +37,5 @@ If you know the booleans operators, you don't need tuto for the others options
 
 
 
-# Work in progress
+# Work in progress, Tuto maybe out of dtae and some weirds bugs
 
