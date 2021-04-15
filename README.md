@@ -4,7 +4,8 @@
 A blender add-on to facilitate booleans operations,
 Work in progress, Tuto maybe out of date and some weirds bugs
 
-![addOn pub1](https://user-images.githubusercontent.com/39344736/114801518-24a23000-9d9c-11eb-868d-74c11b554d6b.png)
+![pubAdd2](https://user-images.githubusercontent.com/39344736/114801945-0c7ee080-9d9d-11eb-91e5-93e5290a56ed.png)
+
 
 # Tuto
 
