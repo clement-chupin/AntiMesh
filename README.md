@@ -11,8 +11,10 @@ Work in progress, Tuto maybe out of date and some weirds bugs
 
 1 : Import the add on
 
-![alt text](https://github.com/LightAnge/AntiMesh/blob/main/images/addon_install.PNG?raw=true | width=48)
-![alt text](https://github.com/LightAnge/AntiMesh/blob/main/images/addon_check_it.PNG?raw=true | width=48)
+
+<img src="https://github.com/LightAnge/AntiMesh/blob/main/images/addon_install.PNG?raw=true" width="48">
+
+<img src="https://github.com/LightAnge/AntiMesh/blob/main/images/addon_check_it.PNG?raw=true" width="48">
 
 2 : Active and make object as target mode
 
