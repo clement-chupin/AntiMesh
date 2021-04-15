@@ -32,8 +32,7 @@ Work in progress, Tuto maybe out of date and some weirds bugs
 If you know the booleans operators, you don't need tuto for the others options
 
 
-![alt text](https://github.com/LightAnge/AntiMesh/blob/main/images/other_option.PNG?raw=true)
-![alt text](https://github.com/LightAnge/AntiMesh/blob/main/images/you_don't_need_tuto.PNG?raw=true)
+
 
 
 
